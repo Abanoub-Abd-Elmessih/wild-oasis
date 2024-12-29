@@ -51,7 +51,7 @@ export default function CabinRow({ cabin }) {
     maxCapacity,
     regularPrice,
     discount,
-    Image,
+    image,
   } = cabin;
   const queryClient = useQueryClient();
   const { isLoading: isDeleting, mutate } = useMutation({
@@ -66,7 +66,7 @@ export default function CabinRow({ cabin }) {
   });
   return (
     <TableRow role="row">
-      {Image ? <Img src={Image} alt="cabin image" /> : "There's No Image"}
+      {image ? <Img src={image} alt="cabin image" /> : "There's No Image"}
       <Cabin>{name}</Cabin>
       <div>Fits up to {maxCapacity} guests</div>
       <Price>{formatCurrency(regularPrice)}</Price>
