@@ -18,7 +18,7 @@ const StyledFormRow = styled.div`
     gap: 1.2rem;
   }
 `;
-function CreateCabinForm({ cabinToEdit = {}, setShowForm }) {
+function CreateCabinForm({ cabinToEdit = {}, onCloseModel }) {
   const { id: editId, ...editValues } = cabinToEdit;
   const isEditSession = Boolean(editId);
   const { register, handleSubmit, reset, formState, watch } = useForm({
@@ -39,7 +39,7 @@ function CreateCabinForm({ cabinToEdit = {}, setShowForm }) {
         {
           onSuccess: () => {
             reset();
-            setShowForm(false);
+            onCloseModel?.();
           },
         }
       );
@@ -47,7 +47,9 @@ function CreateCabinForm({ cabinToEdit = {}, setShowForm }) {
       createCabin(
         { ...data, image: image },
         {
-          onSuccess: () => reset(),
+          onSuccess: () => {
+            reset(), onCloseModel?.();
+          },
         }
       );
     }
@@ -57,7 +59,10 @@ function CreateCabinForm({ cabinToEdit = {}, setShowForm }) {
   // }
   return (
     // <Form onSubmit={handleSubmit(onSubmit,onError)}>
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form
+      onSubmit={handleSubmit(onSubmit)}
+      type={onCloseModel ? "modal" : "regular"}
+    >
       <FormRow label={"Cabin name"} error={errors?.name?.message}>
         <Input
           disabled={isWorking}
@@ -133,7 +138,11 @@ function CreateCabinForm({ cabinToEdit = {}, setShowForm }) {
         />
       </FormRow>
       <StyledFormRow>
-        <Button variation="secondary" type="reset">
+        <Button
+          variation="secondary"
+          type="reset"
+          onClick={() => onCloseModel?.()}
+        >
           Cancel
         </Button>
         <Button disabled={isWorking}>

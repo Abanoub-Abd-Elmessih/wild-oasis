@@ -6,6 +6,8 @@ import CreateCabinForm from "./CreateCabinForm";
 import { useDeleteCabin } from "./useDeleteCabin";
 import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
 import { useCreateCabin } from "./useCreateCabin";
+import Modal from "../../ui/Modal";
+import ConfirmDelete from "../../ui/ConfirmDelete";
 
 const TableRow = styled.div`
   display: grid;
@@ -48,6 +50,7 @@ const Discount = styled.div`
 `;
 export default function CabinRow({ cabin }) {
   const [showForm, setShowForm] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const {
     id: cabinId,
     name,
@@ -90,13 +93,21 @@ export default function CabinRow({ cabin }) {
           <button onClick={() => setShowForm(!showForm)}>
             <HiPencil />
           </button>
-          <button onClick={() => deleteCabin(cabinId)} disabled={isDeleting}>
+          <button onClick={() => {setShowDeleteModal(true)}} disabled={isDeleting}>
             <HiTrash />
           </button>
         </div>
       </TableRow>
+
       {showForm && (
-        <CreateCabinForm cabinToEdit={cabin} setShowForm={setShowForm} />
+        <Modal onClose={()=>setShowForm(false)}>
+          <CreateCabinForm cabinToEdit={cabin} onCloseModel={()=>setShowForm(false)} />
+        </Modal>
+      )}
+      {showDeleteModal &&(
+        <Modal onClose={()=>setShowDeleteModal(false)}>
+          <ConfirmDelete resourceName={'cabins'} disabled={isDeleting} onConfirm={()=>deleteCabin(cabinId)} onCloseModal={()=>setShowDeleteModal(false)}/>
+        </Modal>
       )}
     </>
   );
